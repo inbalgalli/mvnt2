@@ -3,9 +3,27 @@
  *
  * An implementation of fibonacci heap over integers.
  */
-public class FibonacciHeap
-{
-
+public class FibonacciHeap{
+	
+	public int numCuts = 0;
+	public int marked = 0;
+	public int numLinks = 0;
+	private HeapNode firstNode;
+	private HeapNode minNode;
+	private int treeCount;
+	
+	public FibonacciHeap() {
+		firstNode = null;
+		minNode = null;
+		treeCount = 0;
+	}
+	
+	public FibonacciHeap(HeapNode root) {
+		firstNode = root;
+		minNode = root;
+		treeCount = 1;
+	}	
+	
    /**
     * public boolean isEmpty()
     *
@@ -171,14 +189,74 @@ public class FibonacciHeap
     public class HeapNode{
 
 	public int key;
+	private int rank;
+	private int size;
+	private int mark;
+	private HeapNode child;
+	private HeapNode next;
+	private HeapNode prev;
+	private HeapNode parent;
 
   	public HeapNode(int key) {
 	    this.key = key;
+	    this.rank = 0;
+	    this.size = 1;
+	    this.mark = 0;
+	    this.child = null;
+	    this.next = this;
+	    this.prev = this;
+	    this.parent = null;
+	    
       }
 
   	public int getKey() {
 	    return this.key;
       }
+  	public void setKey(int newKey) {
+  		this.key = newKey;
+  	}
+  	public int getRank() {
+  		return this.rank;
+  	}
+  	public void setRank(int newRank) {
+  		this.rank = newRank;
+  	}
+  	public int getSize() {
+  		return this.size;
+  	}
+  	public void setSize(int newSize) {
+  		this.size = newSize;
+  	}
+  	public int getMark() {
+  		return this.mark;
+  	}
+  	public void setMark(int newMark) {
+  		this.mark = newMark;
+  	}
+  	public HeapNode getChild() {
+  		return this.child;
+  	}
+  	public void setChild(HeapNode newChild) {
+  		this.child = newChild;
+  	}
+  	public HeapNode getNext() {
+  		return this.next;
+  	}
+  	public void setNext(HeapNode newNext) {
+  		this.next = newNext;
+  	}
+  	public HeapNode getPrev() {
+  		return this.prev;
+  	}
+  	public void setPrev(HeapNode newPrev) {
+  		this.prev = newPrev;
+  	}
+  	public HeapNode getParent() {
+  		return this.parent;
+  	}
+  	public void setParent(HeapNode newParent) {
+  		this.parent = newParent;
+  	}
 
     }
 }
