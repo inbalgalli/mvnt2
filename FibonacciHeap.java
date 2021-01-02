@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * FibonacciHeap
@@ -8,19 +10,29 @@ import java.util.Arrays;
 public class FibonacciHeap {
 	
 	public static void main(String[] args) {
-		FibonacciHeap heap=new FibonacciHeap();
-		for (int i=0;i<17;i++) {
-		heap.insert(i);}
+		FibonacciHeap h1=new FibonacciHeap();
+		FibonacciHeap h2=new FibonacciHeap();
+		FibonacciHeap h3=new FibonacciHeap();
+		FibonacciHeap h4=new FibonacciHeap();
+		/*
+		 * for (int i=0;i<17;i++) { heap.insert(i);}
+		 * 
+		 * heap.deleteMin(); heap.mayaPrint(); HeapNode node=
+		 * heap.firstNode.getChild().getChild(); System.out.println("Deliting node: " +
+		 * node.getKey()); heap.delete(node); heap.mayaPrint();
+		 * 
+		 * 
+		 */
 		
-		heap.deleteMin();
-		heap.mayaPrint();
-		HeapNode node= heap.firstNode.getChild().getChild();
-	    System.out.println("Deliting node: " + node.getKey());
-		heap.delete(node);
-		heap.mayaPrint();
-		
-		
-
+		/*
+		 * h1.insert(0); h1.insert(10); h1.insert(9); h1.insert(8); h1.insert(1);
+		 * h1.deleteMin(); h2.insert(0); h2.insert(14); h2.insert(11); h2.deleteMin();
+		 * h3.insert(2); h4.insert(0); h4.insert(6); h4.insert(5); h4.insert(4);
+		 * h4.insert(3); h4.deleteMin(); h1.meld(h2); h1.meld(h3); h1.meld(h4);
+		 * 
+		 * h1.deleteMin();
+		 * 
+		 */
 		
 	}
 
@@ -229,7 +241,7 @@ public class FibonacciHeap {
 		HeapNode first = this.firstNode;
 		HeapNode currentMin = first;
 		HeapNode node = first;
-		int numCells = (int) (Math.log10(this.size) / Math.log10(2)) + 1;
+		int numCells = (int) (Math.log10(this.size + 1) / Math.log10(2)) + 1;
 		HeapNode[] arr = new HeapNode[numCells];
 		arr[node.getRank()] = node;
 		node = node.getNext();
@@ -254,12 +266,35 @@ public class FibonacciHeap {
 
 		}
 		int trees = 0;
+		List<HeapNode> list = new LinkedList<HeapNode>();
 		for (HeapNode hn: arr) { //O(logn) - checking how many trees there are
 			if (hn != null) {
+				list.add(hn);
 				trees++;
 			}
 		}
 		this.treeCount = trees;
+		
+		// reorginize the trees so they will be in ascending order (based on ranks)
+		if (list.size() != 0) {
+			this.firstNode = list.get(0);
+			this.firstNode.setPrev(list.get(list.size() - 1));
+		}
+		if (list.size() == 1) {
+			this.firstNode.setNext(this.firstNode);
+		}else {
+			for (int i = 1; i< list.size() - 1; i++) {
+				HeapNode hn = list.get(i);
+				hn.setNext(list.get(i + 1));
+				hn.setPrev(list.get(i - 1));
+			}
+			list.get(list.size() - 1).setPrev(list.get(list.size() - 2));
+			list.get(list.size() - 1).setNext(list.get(0));
+		}
+
+		
+		
+		
 		return currentMin;
 	}
 	
@@ -270,6 +305,9 @@ public class FibonacciHeap {
 			node1 = node2;
 			node2 = tmp;
 		}
+		node1.getNext().setPrev(node1.getPrev());
+		node1.getPrev().setNext(node1.getNext());
+
 		if (node1.getKey() == this.firstNode.getKey()) {//changing the firstNode pointer to the father
 			this.firstNode = node2;
 		}
@@ -284,8 +322,8 @@ public class FibonacciHeap {
 		
 		if (node2.getChild() != null) { //set node1 with new siblings
 			HeapNode firstChild = node2.getChild();
-			firstChild.getPrev().setNext(node1);
 			node1.setPrev(firstChild.getPrev());
+			firstChild.getPrev().setNext(node1);
 			firstChild.setPrev(node1);
 			node1.setNext(firstChild);
 		}else { //node1 has no new siblings
@@ -295,7 +333,6 @@ public class FibonacciHeap {
 		node2.setChild(node1);
 		node1.setParent(node2);
 		node2.setRank(node2.getRank() + 1);
-
 		return node2;
 		
 	}
@@ -320,8 +357,10 @@ public class FibonacciHeap {
 		// melding the heaps
 		this.firstNode.getPrev().setNext(heap2.firstNode);
 		heap2.firstNode.getPrev().setNext(this.firstNode);
-		heap2.firstNode.setPrev(this.firstNode.getPrev());
-		this.firstNode.setPrev(heap2.firstNode.getPrev());
+		HeapNode thisPrev = this.firstNode.getPrev();
+		HeapNode heap2Prev = heap2.firstNode.getPrev();
+		heap2.firstNode.setPrev(thisPrev);
+		this.firstNode.setPrev(heap2Prev);
 		if (heap2.minNode.getKey() < this.minNode.getKey()) { //find new minimum
 			this.minNode = heap2.minNode;
 		}
