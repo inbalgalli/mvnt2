@@ -9,7 +9,7 @@ public class FibonacciHeap {
 	
 	public static void main(String[] args) {
 		FibonacciHeap heap=new FibonacciHeap();
-		for (int i=0;i<17;i++) {
+		for (int i=0;i<15;i++) {
 		heap.insert(i);}
 		
 		heap.deleteMin();
@@ -18,7 +18,30 @@ public class FibonacciHeap {
 	    System.out.println("Deliting node: " + node.getKey());
 		heap.delete(node);
 		heap.mayaPrint();
-		
+		node= heap.firstNode.getNext().getChild().getChild();
+	    System.out.println("Deliting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getChild();
+	    System.out.println("Deliting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getNext().getChild();
+	    System.out.println("Deliting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getChild().getChild();
+	    System.out.println("Deliting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getChild().getNext();
+	    System.out.println("Deliting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getChild();
+	    System.out.println("Deliting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
 		
 
 		
@@ -90,11 +113,13 @@ public class FibonacciHeap {
 	do {
 		System.out.println("Root: " + node.getKey());
 		HeapNode son=node.getChild();
+		if (son!= null) {
 		do {
 		printTree(son);
 		son=son.getNext();
 		}
 		while(son!=node.getChild());
+		}
 		node=node.getNext();
 	}
 	while (node!=firstNode);
@@ -229,7 +254,7 @@ public class FibonacciHeap {
 		HeapNode first = this.firstNode;
 		HeapNode currentMin = first;
 		HeapNode node = first;
-		int numCells = (int) (Math.log10(this.size) / Math.log10(2)) + 1;
+		int numCells = (int) (Math.log10(this.size+1) / Math.log10(2)) + 1;
 		HeapNode[] arr = new HeapNode[numCells];
 		arr[node.getRank()] = node;
 		node = node.getNext();
