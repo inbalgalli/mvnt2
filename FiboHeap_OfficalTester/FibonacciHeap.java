@@ -1,6 +1,11 @@
+package FiboHeap_OfficalTester;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+
+
 
 /**
  * FibonacciHeap
@@ -9,6 +14,55 @@ import java.util.List;
  */
 public class FibonacciHeap {
 	
+	public int getNumOfTrees() {
+		return this.treeCount;
+	}
+	
+	public HeapNode getFirst() {
+		return this.firstNode;
+	}
+	
+	public static void main(String[] args) {
+
+		FibonacciHeap heap=new FibonacciHeap();
+		for (int i=0;i<15;i++) {
+		heap.insert(i);}
+		heap.mayaPrint();
+		heap.deleteMin();
+		heap.print();
+		heap.mayaPrint();
+		HeapNode node= heap.firstNode.getNext().getNext().getChild().getChild();
+	    System.out.println("Deleting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getNext().getChild().getChild();
+	    System.out.println("Deleting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getChild();
+	    System.out.println("Deleting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getNext().getChild();
+	    System.out.println("Deleting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getChild().getChild();
+	    System.out.println("Deleting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getChild().getNext();
+	    System.out.println("Deleting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+		node= heap.firstNode.getNext().getNext().getChild().getChild();
+	    System.out.println("Deleting node: " + node.getKey());
+		heap.delete(node);
+		heap.mayaPrint();
+
+		
+	}
+
 	public static Integer numCuts = 0;
 	public static Integer numLinks = 0;
 	private HeapNode firstNode; // pointer to the root of first tree
@@ -33,13 +87,6 @@ public class FibonacciHeap {
 		marked = 0;
 	}
 	
-	public int getNumOfTrees() {
-		return this.treeCount;
-	}
-	
-	public HeapNode getFirst() {
-		return this.firstNode;
-	}
 	public void print() {
 		if (isEmpty()) {
 			System.out.println("I'm empty!");
@@ -76,7 +123,6 @@ public class FibonacciHeap {
 		System.out.println("Number of trees= " + treeCount);
 		System.out.println("Number of nodes= " + size);
 		System.out.println("Min Node= " + findMin().key);
-		System.out.println("Potential= " + this.potential());
 		System.out.println(" "); 
 		
 	HeapNode node=firstNode;
@@ -515,6 +561,7 @@ public class FibonacciHeap {
 	 * function should run in O(k*deg(H)). You are not allowed to change H.
 	 */
 	public static int[] kMin(FibonacciHeap H, int k) {
+		if (H.size() == 0 || k<=0) return new int[0];
 		int[] arr = new int[k];
 		FibonacciHeap help=new FibonacciHeap();
 		arr[0]=H.minNode.getKey();
@@ -571,7 +618,6 @@ public class FibonacciHeap {
 			this.value=null;
 
 		}
-		
 		public HeapNode getValue() {
 			return this.value;
 		}
