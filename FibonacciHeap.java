@@ -9,32 +9,6 @@ import java.util.List;
  */
 public class FibonacciHeap {
 	
-	public static void main(String[] args) {
-		FibonacciHeap h1=new FibonacciHeap();
-		FibonacciHeap h2=new FibonacciHeap();
-		FibonacciHeap h3=new FibonacciHeap();
-		FibonacciHeap h4=new FibonacciHeap();
-		/*
-		 * for (int i=0;i<17;i++) { heap.insert(i);}
-		 * 
-		 * heap.deleteMin(); heap.mayaPrint(); HeapNode node=
-		 * heap.firstNode.getChild().getChild(); System.out.println("Deliting node: " +
-		 * node.getKey()); heap.delete(node); heap.mayaPrint();
-		 * 
-		 * 
-		 */
-		
-		/*
-		 * h1.insert(0); h1.insert(10); h1.insert(9); h1.insert(8); h1.insert(1);
-		 * h1.deleteMin(); h2.insert(0); h2.insert(14); h2.insert(11); h2.deleteMin();
-		 * h3.insert(2); h4.insert(0); h4.insert(6); h4.insert(5); h4.insert(4);
-		 * h4.insert(3); h4.deleteMin(); h1.meld(h2); h1.meld(h3); h1.meld(h4);
-		 * 
-		 * h1.deleteMin();
-		 * 
-		 */
-		
-	}
 
 	public static Integer numCuts = 0;
 	public static Integer numLinks = 0;
@@ -60,6 +34,13 @@ public class FibonacciHeap {
 		marked = 0;
 	}
 	
+	public int getNumOfTrees() {
+		return this.treeCount;
+	}
+	
+	public HeapNode getFirst() {
+		return this.firstNode;
+	}
 	public void print() {
 		if (isEmpty()) {
 			System.out.println("I'm empty!");
@@ -283,6 +264,7 @@ public class FibonacciHeap {
 		if (list.size() == 1) {
 			this.firstNode.setNext(this.firstNode);
 		}else {
+			this.firstNode.setNext(list.get(1));
 			for (int i = 1; i< list.size() - 1; i++) {
 				HeapNode hn = list.get(i);
 				hn.setNext(list.get(i + 1));
@@ -410,13 +392,13 @@ public class FibonacciHeap {
 	 *
 	 */
 	public void delete(HeapNode x) { // O(n)
-		if (x!=findMin()) {
-		int m = findMin().getKey(); 
-		int k = x.getKey();
-		decreaseKey(x, (k-m)+1); // making node x to be the min - O(logn)
-		System.out.println("-------------Tree after decreasekey-------------");
-		mayaPrint();
-		System.out.println("------------------------------------------------");
+		if (x != findMin()) {
+			int m = findMin().getKey();
+			int k = x.getKey();
+			decreaseKey(x, (k - m) + 1); // making node x to be the min - O(logn)
+			System.out.println("-------------Tree after decreasekey-------------");
+			mayaPrint();
+			System.out.println("------------------------------------------------");
 		}
 		deleteMin(); // deleting the min node - O(n)
 	}
@@ -463,9 +445,9 @@ public class FibonacciHeap {
 		else {
 		x.getPrev().setNext(x.getNext());
 		x.getNext().setPrev(x.getPrev());
-		x.setParent(null);
 		if (parent.getChild()==x) parent.setChild(x.getNext());
 		}
+		x.setParent(null);
 		// connecting x to the heap
 		x.setNext(firstNode);
 		x.setPrev(firstNode.getPrev());
