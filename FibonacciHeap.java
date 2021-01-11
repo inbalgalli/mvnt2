@@ -236,6 +236,7 @@ public class FibonacciHeap {
 		int numCells = (int) (Math.log10(this.size + 1) / Math.log10(2)) + 1;
 		HeapNode[] arr = new HeapNode[numCells];
 		arr[node.getRank()] = node;
+		
 		node = node.getNext();
 		while (node.getKey() != this.firstNode.getKey()) { //while we need to check more nodes
 			if (node.getKey() < currentMin.getKey()) {
@@ -254,6 +255,7 @@ public class FibonacciHeap {
 				}
 				arr[node.getRank()] = node;
 				node = node.getNext();
+
 			}
 
 		}
@@ -291,43 +293,227 @@ public class FibonacciHeap {
 		return currentMin;
 	}
 	
-	private HeapNode linkingNodes(HeapNode node1, HeapNode node2) { //O(1)
+	private HeapNode linkingNodes(HeapNode node1, HeapNode node2) { // O(1)
 		numLinks++;
-		if (node1.getKey() < node2.getKey()) { //changing the nodes so node2 will be the father of node1
-			HeapNode tmp = node1;
-			node1 = node2;
-			node2 = tmp;
-		}
-		node1.getNext().setPrev(node1.getPrev());
-		node1.getPrev().setNext(node1.getNext());
 
-		if (node1.getKey() == this.firstNode.getKey()) {//changing the firstNode pointer to the father
-			this.firstNode = node2;
+		if (node1.getNext().getKey() != node2.getKey() && node2.getNext().getKey() != node1.getKey()) {
+			if (node1.getKey() == this.firstNode.getKey()) {// changing the firstNode pointer
+				this.firstNode = node1.getNext();
+			}
+			if (node1.getKey() < node2.getKey()) {
+
+				node1.getNext().setPrev(node1.getPrev());
+				node1.getPrev().setNext(node1.getNext());
+
+				HeapNode node2P = node2.getPrev();
+				HeapNode node2N = node2.getNext();
+
+				if (node1.getChild() != null) { // set node2 with new siblings
+					HeapNode firstChild = node1.getChild();
+					node2.setPrev(firstChild.getPrev());
+					firstChild.getPrev().setNext(node2);
+					firstChild.setPrev(node2);
+					node2.setNext(firstChild);
+				} else { // node2 has no new siblings
+					node2.setNext(node2);
+					node2.setPrev(node2);
+				}
+
+				node2P.setNext(node1);
+				node2N.setPrev(node1);
+				node1.setPrev(node2P);
+				node1.setNext(node2N);
+
+				node1.setChild(node2);
+				node2.setParent(node1);
+				node1.setRank(node1.getRank() + 1);
+
+				return node1;
+
+			} else {
+				node1.getNext().setPrev(node1.getPrev());
+				node1.getPrev().setNext(node1.getNext());
+
+				if (node2.getChild() != null) { // set node1 with new siblings
+					HeapNode firstChild = node2.getChild();
+					node1.setPrev(firstChild.getPrev());
+					firstChild.getPrev().setNext(node1);
+					firstChild.setPrev(node1);
+					node1.setNext(firstChild);
+				} else { // node1 has no new siblings
+					node1.setNext(node1);
+					node1.setPrev(node1);
+				}
+
+				node2.setChild(node1);
+				node1.setParent(node2);
+				node2.setRank(node2.getRank() + 1);
+
+				return node2;
+			}
+
+		} else {
+			if (node1.getNext().getKey() == node2.getKey() && node2.getNext().getKey() == node1.getKey()) {
+				if (node1.getKey() < node2.getKey()) {
+					if (node2.getKey() == firstNode.getKey()) {
+						firstNode = node1;
+					}
+					if (node1.getChild() != null) { // set node2 with new siblings
+						HeapNode firstChild = node1.getChild();
+						node2.setPrev(firstChild.getPrev());
+						firstChild.getPrev().setNext(node2);
+						firstChild.setPrev(node2);
+						node2.setNext(firstChild);
+					} else { // node2 has no new siblings
+						node2.setNext(node2);
+						node2.setPrev(node2);
+					}
+
+					node1.setChild(node2);
+					node2.setParent(node1);
+					node1.setRank(node1.getRank() + 1);
+
+					node1.setNext(node1);
+					node1.setPrev(node1);
+					return node1;
+				} else {
+					if (node1.getKey() == firstNode.getKey()) {
+						firstNode = node2;
+					}
+					if (node2.getChild() != null) { // set node2 with new siblings
+						HeapNode firstChild = node2.getChild();
+						node1.setPrev(firstChild.getPrev());
+						firstChild.getPrev().setNext(node1);
+						firstChild.setPrev(node1);
+						node1.setNext(firstChild);
+					} else { // node2 has no new siblings
+						node1.setNext(node1);
+						node1.setPrev(node1);
+					}
+
+					node2.setChild(node1);
+					node1.setParent(node2);
+					node2.setRank(node2.getRank() + 1);
+
+					node2.setNext(node2);
+					node2.setPrev(node2);
+					return node2;
+				}
+
+			} else if (node1.getNext().getKey() == node2.getKey()) {
+
+				if (node1.getKey() < node2.getKey()) {
+					if (node2.getKey() == firstNode.getKey()) {
+						firstNode = node1;
+					}
+
+					HeapNode node2N = node2.getNext();
+					node2N.setPrev(node1);
+					node1.setNext(node2N);
+
+					if (node1.getChild() != null) { // set node2 with new siblings
+						HeapNode firstChild = node1.getChild();
+						node2.setPrev(firstChild.getPrev());
+						firstChild.getPrev().setNext(node2);
+						firstChild.setPrev(node2);
+						node2.setNext(firstChild);
+					} else { // node2 has no new siblings
+						node2.setNext(node2);
+						node2.setPrev(node2);
+					}
+
+					node1.setChild(node2);
+					node2.setParent(node1);
+					node1.setRank(node1.getRank() + 1);
+
+					return node1;
+
+				} else {
+					if (node1.getKey() == firstNode.getKey()) {
+						firstNode = node2;
+					}
+
+					HeapNode node1P = node1.getPrev();
+					node1P.setNext(node2);
+					node2.setPrev(node1P);
+
+					if (node2.getChild() != null) { // set node2 with new siblings
+						HeapNode firstChild = node2.getChild();
+						node1.setPrev(firstChild.getPrev());
+						firstChild.getPrev().setNext(node1);
+						firstChild.setPrev(node1);
+						node1.setNext(firstChild);
+					} else { // node2 has no new siblings
+						node1.setNext(node1);
+						node1.setPrev(node1);
+					}
+
+					node2.setChild(node1);
+					node1.setParent(node2);
+					node2.setRank(node2.getRank() + 1);
+
+					return node2;
+
+				}
+
+			} else { // node2.getNext().getKey() == node1.getKey()
+				if (node1.getKey() < node2.getKey()) {
+
+					HeapNode node2P = node2.getPrev();
+					node2P.setNext(node1);
+					node1.setPrev(node2P);
+
+					if (node2.getKey() == firstNode.getKey()) {
+						firstNode = node1;
+					}
+
+					if (node1.getChild() != null) { // set node2 with new siblings
+						HeapNode firstChild = node1.getChild();
+						node2.setPrev(firstChild.getPrev());
+						firstChild.getPrev().setNext(node2);
+						firstChild.setPrev(node2);
+						node2.setNext(firstChild);
+					} else { // node2 has no new siblings
+						node2.setNext(node2);
+						node2.setPrev(node2);
+					}
+
+					node1.setChild(node2);
+					node2.setParent(node1);
+					node1.setRank(node1.getRank() + 1);
+
+					return node1;
+
+				} else {
+					if (node1.getKey() == firstNode.getKey()) {
+						firstNode = node1.getNext();
+					}
+					HeapNode node1N = node1.getNext();
+					node1N.setPrev(node2);
+					node2.setNext(node1N);
+
+					if (node2.getChild() != null) { // set node2 with new siblings
+						HeapNode firstChild = node2.getChild();
+						node1.setPrev(firstChild.getPrev());
+						firstChild.getPrev().setNext(node1);
+						firstChild.setPrev(node1);
+						node1.setNext(firstChild);
+					} else { // node2 has no new siblings
+						node1.setNext(node1);
+						node1.setPrev(node1);
+					}
+
+					node2.setChild(node1);
+					node1.setParent(node2);
+					node2.setRank(node2.getRank() + 1);
+
+					return node2;
+				}
+
+			}
+
 		}
-		//changing pointers if needed
-		if (node2.getNext().getKey() == node1.getKey() || node1.getPrev().getKey() == node2.getKey()) { //node2.next = node1 or node1.prev = node2
-			node1.getNext().setPrev(node2);
-			node2.setNext(node1.getNext());
-		}if (node1.getNext().getKey() == node2.getKey() || node2.getPrev().getKey() == node1.getKey()) { //node1.next = node2 or node2.prev = node1
-			node1.getPrev().setNext(node2);
-			node2.setPrev(node1.getPrev());
-		}		
-		
-		if (node2.getChild() != null) { //set node1 with new siblings
-			HeapNode firstChild = node2.getChild();
-			node1.setPrev(firstChild.getPrev());
-			firstChild.getPrev().setNext(node1);
-			firstChild.setPrev(node1);
-			node1.setNext(firstChild);
-		}else { //node1 has no new siblings
-			node1.setNext(node1);
-			node1.setPrev(node1);
-		}
-		node2.setChild(node1);
-		node1.setParent(node2);
-		node2.setRank(node2.getRank() + 1);
-		return node2;
-		
+
 	}
 
 	/**
@@ -516,29 +702,23 @@ public class FibonacciHeap {
 	 */
 	public static int[] kMin(FibonacciHeap H, int k) {
 		int[] arr = new int[k];
-		FibonacciHeap help=new FibonacciHeap();
-		arr[0]=H.minNode.getKey();
+		FibonacciHeap help = new FibonacciHeap();
+		arr[0] = H.minNode.getKey();
 		HeapNode x = H.minNode.getChild();
-		for (int i=1;i<k;i++) { //k-1 iterations
-			if (x==null) {
-				arr[i] = help.findMin().getKey();
-				x=help.findMin().getValue().getChild();
-				help.deleteMin();
+		for (int i = 1; i < k; i++) { // k-1 iterations
+			if (x != null){
+				HeapNode y = x;
+				do { // inserting the last min's children to the heap
+					help.insert(y.getKey());
+					help.firstNode.setValue(y);
+					y = y.getNext();
+				} while (y != x);
 			}
-			else {
-			HeapNode y = x;
-			do {  //inserting the last min's children to the heap
-				help.insert(y.getKey());
-				help.firstNode.setValue(y);
-				y=y.getNext();
-			}
-			while (y!=x);
 			arr[i] = help.findMin().getKey();
-			x=help.findMin().getValue().getChild();
+			x = help.findMin().getValue().getChild();
 			help.deleteMin();
-			}
 		}
-		
+
 		return arr; // should be replaced by student code
 	}
 
