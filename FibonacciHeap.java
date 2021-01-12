@@ -296,13 +296,13 @@ public class FibonacciHeap {
 	private HeapNode linkingNodes(HeapNode node1, HeapNode node2) { // O(1)
 		numLinks++;
 
-		if (node1.getNext().getKey() != node2.getKey() && node2.getNext().getKey() != node1.getKey()) {
+		if (node1.getNext().getKey() != node2.getKey() && node2.getNext().getKey() != node1.getKey()) { //node1 and node2 has no pointers to eachother
 			if (node1.getKey() == this.firstNode.getKey()) {// changing the firstNode pointer
 				this.firstNode = node1.getNext();
 			}
 			if (node1.getKey() < node2.getKey()) {
 
-				node1.getNext().setPrev(node1.getPrev());
+				node1.getNext().setPrev(node1.getPrev()); //removing node1 from its place
 				node1.getPrev().setNext(node1.getNext());
 
 				HeapNode node2P = node2.getPrev();
@@ -319,7 +319,7 @@ public class FibonacciHeap {
 					node2.setPrev(node2);
 				}
 
-				node2P.setNext(node1);
+				node2P.setNext(node1); //setting the parent in the right place
 				node2N.setPrev(node1);
 				node1.setPrev(node2P);
 				node1.setNext(node2N);
@@ -331,7 +331,7 @@ public class FibonacciHeap {
 				return node1;
 
 			} else {
-				node1.getNext().setPrev(node1.getPrev());
+				node1.getNext().setPrev(node1.getPrev()); //removing node1 from its place
 				node1.getPrev().setNext(node1.getNext());
 
 				if (node2.getChild() != null) { // set node1 with new siblings
@@ -352,10 +352,10 @@ public class FibonacciHeap {
 				return node2;
 			}
 
-		} else {
-			if (node1.getNext().getKey() == node2.getKey() && node2.getNext().getKey() == node1.getKey()) {
+		} else { //node1 and node2 has one or more pointers to eachother
+			if (node1.getNext().getKey() == node2.getKey() && node2.getNext().getKey() == node1.getKey()) { //node1 and node2 are the only nodes in the heap
 				if (node1.getKey() < node2.getKey()) {
-					if (node2.getKey() == firstNode.getKey()) {
+					if (node2.getKey() == firstNode.getKey()) {//changing firstNode if necessary
 						firstNode = node1;
 					}
 					if (node1.getChild() != null) { // set node2 with new siblings
@@ -377,16 +377,16 @@ public class FibonacciHeap {
 					node1.setPrev(node1);
 					return node1;
 				} else {
-					if (node1.getKey() == firstNode.getKey()) {
+					if (node1.getKey() == firstNode.getKey()) {//changing firstNode if necessary
 						firstNode = node2;
 					}
-					if (node2.getChild() != null) { // set node2 with new siblings
+					if (node2.getChild() != null) { // set node1 with new siblings
 						HeapNode firstChild = node2.getChild();
 						node1.setPrev(firstChild.getPrev());
 						firstChild.getPrev().setNext(node1);
 						firstChild.setPrev(node1);
 						node1.setNext(firstChild);
-					} else { // node2 has no new siblings
+					} else { // node1 has no new siblings
 						node1.setNext(node1);
 						node1.setPrev(node1);
 					}
@@ -400,14 +400,14 @@ public class FibonacciHeap {
 					return node2;
 				}
 
-			} else if (node1.getNext().getKey() == node2.getKey()) {
+			} else if (node1.getNext().getKey() == node2.getKey()) { //node1.next == node2 (there is at least one more node after node2)
 
 				if (node1.getKey() < node2.getKey()) {
-					if (node2.getKey() == firstNode.getKey()) {
+					if (node2.getKey() == firstNode.getKey()) { //changing firstNode if necessary
 						firstNode = node1;
 					}
 
-					HeapNode node2N = node2.getNext();
+					HeapNode node2N = node2.getNext(); //removing node2 from its place
 					node2N.setPrev(node1);
 					node1.setNext(node2N);
 
@@ -429,21 +429,21 @@ public class FibonacciHeap {
 					return node1;
 
 				} else {
-					if (node1.getKey() == firstNode.getKey()) {
+					if (node1.getKey() == firstNode.getKey()) { //changing firstNode if necessary
 						firstNode = node2;
 					}
 
-					HeapNode node1P = node1.getPrev();
+					HeapNode node1P = node1.getPrev(); //removing node1 from its place
 					node1P.setNext(node2);
 					node2.setPrev(node1P);
 
-					if (node2.getChild() != null) { // set node2 with new siblings
+					if (node2.getChild() != null) { // set node1 with new siblings
 						HeapNode firstChild = node2.getChild();
 						node1.setPrev(firstChild.getPrev());
 						firstChild.getPrev().setNext(node1);
 						firstChild.setPrev(node1);
 						node1.setNext(firstChild);
-					} else { // node2 has no new siblings
+					} else { // node1 has no new siblings
 						node1.setNext(node1);
 						node1.setPrev(node1);
 					}
@@ -456,14 +456,14 @@ public class FibonacciHeap {
 
 				}
 
-			} else { // node2.getNext().getKey() == node1.getKey()
+			} else { // node2.getNext().getKey() == node1.getKey() - //node2.next == node1 (there is at least one more node after node1)
 				if (node1.getKey() < node2.getKey()) {
 
-					HeapNode node2P = node2.getPrev();
+					HeapNode node2P = node2.getPrev(); //removing node2 from its place
 					node2P.setNext(node1);
 					node1.setPrev(node2P);
 
-					if (node2.getKey() == firstNode.getKey()) {
+					if (node2.getKey() == firstNode.getKey()) { //changing firstNode if necessary
 						firstNode = node1;
 					}
 
@@ -485,10 +485,10 @@ public class FibonacciHeap {
 					return node1;
 
 				} else {
-					if (node1.getKey() == firstNode.getKey()) {
+					if (node1.getKey() == firstNode.getKey()) { //changing firstNode if necessary
 						firstNode = node1.getNext();
 					}
-					HeapNode node1N = node1.getNext();
+					HeapNode node1N = node1.getNext(); //removing node1 from its place
 					node1N.setPrev(node2);
 					node2.setNext(node1N);
 
